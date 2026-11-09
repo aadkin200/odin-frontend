@@ -1,0 +1,2 @@
+import {Component} from '@angular/core';import {RouterLink} from '@angular/router';
+@Component({standalone:true,imports:[RouterLink],template:`<section class="content narrow denied"><p class="eyebrow ember">HIGH COMMAND ONLY</p><h1>Access restricted</h1><p>You must sign in with Discord and have the current OC | High Command role to access Cashflow. If you believe this is incorrect, contact club leadership.</p><a routerLink="/" class="btn outline">RETURN HOME</a></section>`})export class AccessDeniedComponent{}
