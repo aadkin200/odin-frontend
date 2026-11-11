@@ -1,12 +1,12 @@
-FROM node:24-alpine AS build
+FROM node:22-alpine AS build
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm install --no-audit --no-fund
 COPY . .
-RUN npm run build -- --configuration production
-
+RUN npm run build
 FROM nginx:1.29-alpine
-COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=build /app/dist/odins-chosen-angular/browser/ /usr/share/nginx/html/
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+ENV BACKEND_UPSTREAM=http://127.0.0.1:9999
+ENV NGINX_ENVSUBST_FILTER=BACKEND_UPSTREAM
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s CMD wget -q -O /dev/null http://127.0.0.1:8080/health || exit 1

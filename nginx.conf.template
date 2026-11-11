@@ -1,27 +1,11 @@
-
 server {
     listen 8080;
     server_name _;
-
     root /usr/share/nginx/html;
     index index.html;
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    location /assets/ {
-        try_files $uri =404;
-        expires 7d;
-        add_header Cache-Control "public";
-    }
-
-    location /api/ {
-        return 503;
-    }
-
-    location /oauth2/ {
-        return 503;
-    }
+    location = /health { access_log off; return 200 "ok"; }
+    location /api/ { proxy_pass ${BACKEND_UPSTREAM}; proxy_set_header Host $host; proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto; proxy_set_header X-Forwarded-Host $host; }
+    location /oauth2/ { proxy_pass ${BACKEND_UPSTREAM}; proxy_set_header Host $host; proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto; }
+    location /login/oauth2/ { proxy_pass ${BACKEND_UPSTREAM}; proxy_set_header Host $host; proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto; }
+    location / { try_files $uri $uri/ /index.html; }
 }
-
